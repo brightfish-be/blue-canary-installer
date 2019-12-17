@@ -6,5 +6,6 @@
 
 # Green message prefixed with ✓
 echo_success() {
-  echo -e "\n\033[0;32m✓ ${target}\033[0m";
+  local msg = $1
+  echo -e "\n\033[0;32m✓ ${msg}\033[0m";
 }
