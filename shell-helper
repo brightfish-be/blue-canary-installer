@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+# Make scripts portable between Windows 10 WSL and Unix OSes
+[[ "$(which docker.exe)" == "" ]] && DOCKER="docker" || DOCKER="docker.exe"
+[[ "$(which docker.exe)" == "" ]] && COMPOSE="docker-compose" || COPOSE="docker-compose.exe"
+
+# Green message prefixed with ✓
+echo_success() {
+  echo -e "\n\033[0;32m✓ ${target}\033[0m";
+}

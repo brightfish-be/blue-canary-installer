@@ -1,0 +1,7 @@
+.DS_Store
+Thumbs.db
+.idea
+.swp
+.env
+.env.dashboard
+.env.aggregator

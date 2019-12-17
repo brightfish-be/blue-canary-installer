@@ -1,0 +1,16 @@
+#!/usr/bin/env sh
+
+# Load helpers functions and variables
+. "$(pwd)/shell-helper"
+
+# Run all tests (unit + integration)
+${COMPOSE} \
+  -f docker-compose.yml \
+  -f docker-compose-dev.yml \
+  exec \
+  --env-file ./.env \
+  -e APP_ENV=testing \
+  -e DB_HOST=host.docker.internal \
+  -e DB_DATABASE=blue_canary_tests \
+  canary-dashboard \
+  ./vendor/bin/phpunit

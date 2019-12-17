@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# Load helpers functions and variables
+. "$(pwd)/shell-helper"
+
+${COMPOSE} up -d
+${DOCKER} exec canary-dashboard php artisan migrate --seed

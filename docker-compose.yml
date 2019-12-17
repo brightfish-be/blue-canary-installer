@@ -1,0 +1,99 @@
+version: '3.7'
+
+networks:
+  app-network:
+    external: false
+  proxy-network:
+    external:
+      name: ${DOCKER_NETWORK}
+
+volumes:
+  config:
+  public:
+
+services:
+
+  # Admin app
+  canary-dashboard:
+    image: brightfishbe/blue-canary-dashboard
+    container_name: canary-dashboard
+    volumes:
+      - public:/var/www/app/public:ro
+      - config:/var/www/app/config/canary:ro
+    networks:
+      - app-network
+    env_file:
+      - .env.dashboard.example
+    environment:
+      APP_ENV: ${APP_ENV}
+      APP_NAME: ${APP_NAME}
+      APP_URL: ${APP_URL}
+      APP_DEBUG: ${APP_DEBUG}
+      APP_TIMEZONE: ${APP_TIMEZONE}
+      DB_CONNECTION: ${DB_CONNECTION}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_DATABASE: ${DB_DATABASE}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      MYSQL_SSL_MODE: ${MYSQL_SSL_MODE}
+      MYSQL_SSL_KEY: ${MYSQL_SSL_KEY}
+    labels:
+      traefik.enable: 'false'
+
+  # Push api
+  canary-aggregator:
+    depends_on:
+      - canary-dashboard
+    image: brightfishbe/blue-canary-aggregator
+    container_name: canary-aggregator
+    volumes:
+      - config:/var/www/app/config:ro
+    networks:
+      - app-network
+    env_file:
+      - .env.aggregator.example
+    environment:
+      APP_ENV: ${APP_ENV}
+      APP_NAME: ${APP_NAME}
+      APP_URL: ${APP_URL}
+      APP_DEBUG: ${APP_DEBUG}
+      APP_TIMEZONE: ${APP_TIMEZONE}
+      DB_CONNECTION: ${DB_CONNECTION}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_DATABASE: ${DB_DATABASE}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      MYSQL_SSL_MODE: ${MYSQL_SSL_MODE}
+      MYSQL_SSL_KEY: ${MYSQL_SSL_KEY}
+    labels:
+      traefik.enable: 'false'
+
+  # NGINX
+  canary-server:
+    depends_on:
+      - canary-dashboard
+    image: brightfishbe/blue-canary-server
+    container_name: canary-server
+    volumes:
+      - public:/var/www/app/public:ro
+    networks:
+      - proxy-network
+      - app-network
+    environment:
+      APP_ENV: ${APP_ENV}
+    labels:
+      traefik.enable: 'true'
+      traefik.backend: 'blue-canary'
+      traefik.docker.network: ${DOCKER_NETWORK}
+      traefik.frontend.rule: "Host:${APP_HOST}"
+      traefik.passHostHeader: 'true'
+      traefik.frontend.headers.SSLRedirect: 'true'
+      traefik.frontend.headers.frameDeny: 'false'
+      traefik.frontend.headers.browserXSSFilter: 'true'
+      traefik.frontend.headers.STSSeconds: '315360000'
+      traefik.frontend.headers.STSIncludeSubdomains: 'true'
+      traefik.frontend.headers.STSPreload: 'true'
+      traefik.frontend.headers.contentTypeNosniff: 'true'
+      traefik.frontend.headers.isDevelopment: 'false'

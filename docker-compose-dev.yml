@@ -1,0 +1,43 @@
+version: '3.7'
+
+services:
+
+  # Admin app
+  canary-dashboard:
+    build:
+      context: ../blue-canary-dashboard
+      dockerfile: Dockerfile
+      args:
+        APP_ENV: ${APP_ENV}
+        APP_TIMEZONE: ${APP_TIMEZONE}
+    image: brightfish/blue-canary-dashboard
+    volumes:
+      - ../blue-canary-dashboard:/var/www/app
+      - config:/var/www/app/config/canary:rw
+
+  # Push api
+  canary-aggregator:
+    build:
+      context: ../blue-canary-aggregator
+      dockerfile: Dockerfile
+      args:
+        APP_ENV: ${APP_ENV}
+        APP_TIMEZONE: ${APP_TIMEZONE}
+    image: brightfish/blue-canary-aggregator
+    volumes:
+      - ../blue-canary-aggregator:/var/www/app
+
+  # NGINX
+  canary-server:
+    build:
+      context: ../blue-canary-server
+      dockerfile: Dockerfile
+      args:
+        APP_ENV: ${APP_ENV}
+        APP_TIMEZONE: ${APP_TIMEZONE}
+    image: brightfish/blue-canary-server
+    volumes:
+      - ../blue-canary/public:/var/www/app/public:ro
+    labels:
+      traefik.frontend.headers.SSLRedirect: 'false'
+      traefik.frontend.headers.isDevelopment: 'true'

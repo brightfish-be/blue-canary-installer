@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+# Load helpers functions and variables
+. "$(pwd)/shell-helper"
+
+# Copy the environment files
+cp .env.example .env
+cp .env.dashboard.example .env.dashboard
+cp .env.aggregator.example .env.aggregator
+
+# Get the images
+${DOCKER} pull brightfishbe/blue-canary-aggregator
+${DOCKER} pull brightfishbe/blue-canary-dashboard
+${DOCKER} pull brightfishbe/blue-canary-server
+
+# Temporarily start the dashboard container
+${DOCKER} run -d --name canary-dashboard-tmp brightfishbe/blue-canary-dashboard
+${DOCKER} exec canary-dashboard-tmp composer dump-autoload --no-dev -n -q
+
+# Genarate dashboard keys
+APP_KEY=$(${DOCKER} exec canary-dashboard-tmp php artisan key:generate --show)
+JWT_KEY=$(${DOCKER} exec canary-dashboard-tmp php artisan jwt:secret --show)
+
+awk -v key="APP_KEY=${APP_KEY}" '!x{x=sub("APP_KEY=",key)}1' .env.dashboard > .env.dashboard.tmp && mv -f .env.dashboard.tmp .env.dashboard
+awk -v key="JWT_SECRET=${JWT_KEY}" '!x{x=sub("JWT_SECRET=",key)}3' .env.dashboard > .env.dashboard.tmp && mv -f .env.dashboard.tmp .env.dashboard
+
+# Remove the temporary container
+${DOCKER} stop canary-dashboard-tmp && ${DOCKER} rm canary-dashboard-tmp
+
+# Generate an aggregator key
+APP_KEY=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
+sed "0,/APP_KEY=/s//APP_KEY=${APP_KEY}/" -i .env.aggregator
+
+# Finish
+echo_success 'All done, you can now:'
+echo -e "1. Edit the env files"
+echo -e "2. Run ./start"
