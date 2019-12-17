@@ -23,7 +23,7 @@ services:
     networks:
       - app-network
     env_file:
-      - .env.dashboard.example
+      - .env.dashboard
     environment:
       APP_ENV: ${APP_ENV}
       APP_NAME: ${APP_NAME}
@@ -52,7 +52,7 @@ services:
     networks:
       - app-network
     env_file:
-      - .env.aggregator.example
+      - .env.aggregator
     environment:
       APP_ENV: ${APP_ENV}
       APP_NAME: ${APP_NAME}

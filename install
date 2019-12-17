@@ -4,4 +4,4 @@
 . "$(pwd)/shell-helper"
 
 ${COMPOSE} up -d
-${DOCKER} exec canary-dashboard php artisan migrate --seed
+${DOCKER} exec -it canary-dashboard php artisan migrate --seed
