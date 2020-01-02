@@ -37,7 +37,6 @@ services:
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
       MYSQL_SSL_MODE: ${MYSQL_SSL_MODE}
-      MYSQL_SSL_KEY: ${MYSQL_SSL_KEY}
     labels:
       traefik.enable: 'false'
 
@@ -66,7 +65,6 @@ services:
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
       MYSQL_SSL_MODE: ${MYSQL_SSL_MODE}
-      MYSQL_SSL_KEY: ${MYSQL_SSL_KEY}
     labels:
       traefik.enable: 'false'
 
