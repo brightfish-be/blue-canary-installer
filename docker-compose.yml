@@ -47,7 +47,7 @@ services:
     image: brightfishbe/blue-canary-aggregator
     container_name: canary-aggregator
     volumes:
-      - config:/var/www/app/config:ro
+      - config:/var/www/app/config/canary:ro
     networks:
       - app-network
     env_file:

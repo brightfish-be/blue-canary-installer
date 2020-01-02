@@ -13,7 +13,6 @@ services:
     image: brightfish/blue-canary-dashboard
     volumes:
       - ../blue-canary-dashboard:/var/www/app
-      - config:/var/www/app/config/canary:rw
 
   # Push api
   canary-aggregator:
@@ -26,6 +25,7 @@ services:
     image: brightfish/blue-canary-aggregator
     volumes:
       - ../blue-canary-aggregator:/var/www/app
+      - ../blue-canary-dashboard/config/canary:/var/www/app/config/canary
 
   # NGINX
   canary-server:
