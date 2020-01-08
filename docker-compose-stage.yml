@@ -1,0 +1,9 @@
+version: '3.7'
+
+services:
+
+  # NGINX
+  canary-server:
+    labels:
+      traefik.frontend.headers.SSLRedirect: 'false'
+      traefik.frontend.headers.isDevelopment: 'false'
