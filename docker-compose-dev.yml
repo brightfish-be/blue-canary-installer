@@ -12,7 +12,7 @@ services:
         APP_TIMEZONE: ${APP_TIMEZONE}
     image: brightfish/blue-canary-dashboard
     volumes:
-      - ../blue-canary-dashboard:/var/www/app
+      - ../blue-canary-dashboard:/var/www/app:rw
 
   # Push api
   canary-aggregator:
@@ -24,8 +24,8 @@ services:
         APP_TIMEZONE: ${APP_TIMEZONE}
     image: brightfish/blue-canary-aggregator
     volumes:
-      - ../blue-canary-aggregator:/var/www/app
-      - ../blue-canary-dashboard/config/canary:/var/www/app/config/canary
+      - ../blue-canary-aggregator:/var/www/app:rw
+      - ../blue-canary-dashboard/config/canary:/var/www/app/config/canary:rw
 
   # NGINX
   canary-server:
@@ -37,7 +37,7 @@ services:
         APP_TIMEZONE: ${APP_TIMEZONE}
     image: brightfish/blue-canary-server
     volumes:
-      - ../blue-canary/public:/var/www/app/public:ro
+      - ../blue-canary-dashboard/public:/var/www/app/public:ro
     labels:
       traefik.frontend.headers.SSLRedirect: 'false'
       traefik.frontend.headers.isDevelopment: 'true'
