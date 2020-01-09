@@ -13,11 +13,11 @@ ${DOCKER} pull brightfishbe/blue-canary-aggregator
 ${DOCKER} pull brightfishbe/blue-canary-dashboard
 ${DOCKER} pull brightfishbe/blue-canary-server
 
-# Temporarily start the dashboard container
+# Temporarily start a dashboard container
 ${DOCKER} run -d --name canary-dashboard-tmp brightfishbe/blue-canary-dashboard
 ${DOCKER} exec canary-dashboard-tmp composer dump-autoload --no-dev -n -q
 
-# Genarate dashboard keys
+# Generate dashboard keys
 APP_KEY=$(${DOCKER} exec canary-dashboard-tmp php artisan key:generate --show)
 JWT_KEY=$(${DOCKER} exec canary-dashboard-tmp php artisan jwt:secret --show)
 
@@ -34,4 +34,4 @@ sed "0,/APP_KEY=/s//APP_KEY=${APP_KEY}/" -i .env.aggregator
 # Finish
 echo_success 'All done, you can now:'
 echo -e "1. Edit the env files"
-echo -e "2. Run ./start"
+echo -e "2. Run ./install for initial configuration or just docker-compose up -d"
