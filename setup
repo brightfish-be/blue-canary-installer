@@ -8,10 +8,12 @@ cp .env.example .env
 cp .env.dashboard.example .env.dashboard
 cp .env.aggregator.example .env.aggregator
 
+version="${1:-latest}"
+
 # Get the images
-${DOCKER} pull brightfishbe/blue-canary-aggregator
-${DOCKER} pull brightfishbe/blue-canary-dashboard
-${DOCKER} pull brightfishbe/blue-canary-server
+${DOCKER} pull brightfishbe/blue-canary-aggregator:${version}
+${DOCKER} pull brightfishbe/blue-canary-dashboard:${version}
+${DOCKER} pull brightfishbe/blue-canary-server:${version}
 
 # Temporarily start a dashboard container
 ${DOCKER} run -d --name canary-dashboard-tmp brightfishbe/blue-canary-dashboard
