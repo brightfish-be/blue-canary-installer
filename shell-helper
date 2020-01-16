@@ -7,5 +7,29 @@
 # Green message prefixed with ✓
 echo_success() {
   local msg=$1
-  echo -e "\n\033[0;32m✓ ${msg}\033[0m";
+  echo -e "\n\033[0;32m ✓ ${msg}\033[0m"
+}
+
+# Red message prefixed with lighting bolt
+echo_warning() {
+  local msg=$1
+  echo -e "\n\033[1;33m \u2620 ${msg}\033[0m"
+}
+
+# If an Aggregator key is found, assume the installation ran succesfully
+is_installed() {
+  if [ -f .env.aggregator ]; then
+    local line=$(grep '^APP_KEY=.*$' .env.aggregator)
+    local key=${line/APP_KEY=/}
+    echo $([ ${#key} == 32 ] && echo 1 || echo 0)
+  else
+    echo 0
+  fi
+}
+
+# Generic yes/no prompt
+confirm() {
+    local question=$1
+    read -p "${question} [y/N] " answer
+    echo $([[ $answer =~ [yY](es)* ]] && echo 1 || echo 0)
 }

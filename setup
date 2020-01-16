@@ -3,6 +3,16 @@
 # Load helpers functions and variables
 . "$(pwd)/shell-helper"
 
+if [ $(is_installed) == 1 ]; then
+  echo_warning "Blue Canary already seems installed!"
+  if [ "$(confirm ' Do you want to continue?')" == 0 ]; then
+    echo -e ' Ok, aborting...\n'
+    exit 1
+  fi
+fi
+
+echo_success 'Installing Blue Canary...\n'
+
 # Copy the environment files
 cp .env.example .env
 cp .env.dashboard.example .env.dashboard
@@ -35,5 +45,5 @@ sed "0,/APP_KEY=/s//APP_KEY=${APP_KEY}/" -i .env.aggregator
 
 # Finish
 echo_success 'All done, you can now:'
-echo -e "1. Edit the env files"
-echo -e "2. Run ./install for initial configuration or just docker-compose up -d"
+echo -e " 1. Edit the env files"
+echo -e " 2. Run ./migrate for your database setup or just docker-compose up -d\n"
